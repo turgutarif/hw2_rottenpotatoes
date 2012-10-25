@@ -9,17 +9,18 @@ class MoviesController < ApplicationController
   def index
     @all_ratings = Movie.ratings
     session[:ratings]= {'G'=>"1",'PG'=>"1",'PG-13'=>"1",'R'=>"1"}  if !session[:ratings] && !params[:ratings]
-    @redirect =false 
+    redirect =false 
     [:srt_by,:ratings].each do |p|   
-         if !params[p] 
+         if !params[p] && session[p]
            params[p] = session[p]; redirect=redirect||true
+           session.delete p
          else  
             session[p] = params[p]
          end
     end
-    if @redirect
+    if redirect
      flash.keep
-     redirect_to params
+     redirect_to  movies_path(params)
     end
     @movies = Movie.all(:conditions => {:rating => params[:ratings].keys})
     @movies = @movies.sort_by!{|m| m.send params[:srt_by]} if(params[:srt_by]) 
