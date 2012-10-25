@@ -5,9 +5,25 @@ class MoviesController < ApplicationController
     @movie = Movie.find(id) # look up movie by unique ID
     # will render app/views/movies/show.<extension> by default
   end
-
+ 
   def index
-    @movies = Movie.all
+    @all_ratings = Movie.ratings
+    session[:ratings]= {'G'=>"1",'PG'=>"1",'PG-13'=>"1",'R'=>"1"}  if !session[:ratings] && !params[:ratings]
+    @redirect =false 
+    [:srt_by,:ratings].each do |p|   
+         if !params[p] 
+           params[p] = session[p]; redirect=redirect||true
+         else  
+            session[p] = params[p]
+         end
+    end
+    if @redirect
+     flash.keep
+     redirect_to params
+    end
+    @movies = Movie.all(:conditions => {:rating => params[:ratings].keys})
+    @movies = @movies.sort_by!{|m| m.send params[:srt_by]} if(params[:srt_by]) 
+    
   end
 
   def new

@@ -16,6 +16,7 @@ a {
   text-decoration: underline;
   font-weight: bold;
 }
+
 h1 {
   color: maroon;
   font-size: 150%;
@@ -58,4 +59,8 @@ form label {
   line-height: 25px;
   font-weight: bold;
   color: maroon;
+}
+
+table#movies th.hilite {
+  background-color: yellow;
 }
